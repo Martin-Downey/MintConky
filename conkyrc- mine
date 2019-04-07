@@ -1,0 +1,169 @@
+-- Conky, a system monitor, based on torsmo
+--
+-- Any original torsmo code is licensed under the BSD license
+--
+-- All code written since the fork of torsmo is licensed under the GPL
+--
+-- Please see COPYING for details
+--
+-- Copyright (c) 2004, Hannu Saransaari and Lauri Hakkarainen
+-- Copyright (c) 2005-2010 Brenden Matthews, Philip Kovacs, et. al. (see AUTHORS)
+-- All rights reserved.
+--
+-- This program is free software: you can redistribute it and/or modify
+-- it under the terms of the GNU General Public License as published by
+-- the Free Software Foundation, either version 3 of the License, or
+
+-- vim: ts=4 sw=4 noet ai cindent syntax=lua
+
+conky.config = {
+    -- Use double buffering (eliminates flickering)
+     double_buffer = true,
+    -- Run conky in the background
+    background = true,
+
+    --Default shading color and border's shading color
+       default_shade_color = red,
+    -- Update interval in seconds
+    update_interval = 4.0,
+    -- Set to zero to run forever
+    -- total_run_times = 0,
+    -- Subtract file system buffers from used memory
+    -- no_buffers = true,
+    -- Number of samples to take for CPU and network readings
+    cpu_avg_samples = 2,
+    net_avg_samples = 2,
+    -- Use Xft (anti-aliased font and stuff)
+    use_xft = true,
+    font = 'Tahoma:size=8',
+    -- xftalpha = 0.8,
+    uppercase = false,
+    -- Prevent text from moving around while using a mono font
+    use_spacer = 'right',
+    -- Default color and border settings
+    -- Defining colors
+    -- default_color = 'white',
+    default_color = 'green',
+    -- CPU colours
+    color1 = 'ffffff',  -- under 45         (white)
+    color2 = 'ddd333',  -- between 45 - 55  (Yellow)
+    color3 = 'c4a3dd',  -- between 55 - 65  (Purple)
+    color4 = 'f29998',  -- between 65 -75   (Orange)
+    color5 = 'ed1255',  -- 75 and above     (Bright Red)
+    
+    hddtemp_host = '127.0.0.1',
+    hddtemp_port = '7634',
+
+    draw_shades = true,
+    draw_outline = true,
+    draw_borders = true,
+    -- Makes conky window transparent
+    own_window = true,
+    own_window_class = 'Conky',
+    own_window_argb_visual = true,
+    own_window_argb_value = 60,
+    own_window_transparent = true,
+    own_window_type = 'desktop',
+    own_window_hints = 'undecorated,below,skip_taskbar,sticky,skip_pager',
+    -- Window size and position
+    minimum_width = 290,
+    minimum_height = 220,
+    maximum_width = 300,
+    alignment = 'bottom_right',
+    out_to_console = false,
+    out_to_stderr = false,
+    extra_newline = false,
+    gap_y = 5,
+    gap_x = 5,
+
+
+--    # Lua Load  #
+--      lua_load = '~/.conky-lua-testing',
+--      lua_draw_hook_pre  = 'main',
+
+
+
+}
+
+conky.text = [[  
+    ${color lightblue} ${font sans-serif:size=11} $nodename           ${desktop_name} ${font}
+    ${color light yellow}${font sans-serif:bold:size=9}DATE & TIME${hr 2}${font}
+    ${color light yellow} ${font sans-serif:size=10} ${time %d %a %m, %Y} ${color yellow} ${font sans-serif:size=11} ${goto 196}${time  %H}$color${goto 220} ${blink ${time :}} ${color yellow} ${goto 233} ${time %M}
+    ${color yellow}${font sans-serif:bold:size=8}PROCESSORS INFO ${hr 2} ${font}
+    ${goto 10}${cpugauge (${cpu cpu0} (9),(9))(-t)} ${goto 90}${color light blue}CPU Temp : $color1${goto 100}${execi 10 sensors | grep 'temp1' |  awk '/+/{printf $2; exit}'}
+    $stippled_hr  
+    ${color lightblue}CPU1: ${color yellow}${cpu cpu1}% $color ${goto 80} ${exec awk '/cpu MHz/{i++}i==1{printf "%.f",$4; exit}' /proc/cpuinfo} MHz ${goto 180}${color lightblue}CPU2: ${color yellow}${cpu cpu2}% $color ${goto 250}${exec awk '/cpu MHz/{i++}i==2{printf "%.f",$4; exit}' /proc/cpuinfo} MHz 
+    ${color lightblue}CPU3: ${color yellow}${cpu cpu3}% $color ${goto 80} ${exec awk '/cpu MHz/{i++}i==3{printf "%.f",$4; exit}' /proc/cpuinfo} MHz ${goto 180}${color lightblue}CPU4: ${color yellow}${cpu cpu4}% $color ${goto 250}${exec awk '/cpu MHz/{i++}i==4{printf "%.f",$4; exit}' /proc/cpuinfo} MHz
+    ${color lightblue}CPU5: ${color yellow}${cpu cpu5}% $color ${goto 80} ${exec awk '/cpu MHz/{i++}i==5{printf "%.f",$4; exit}' /proc/cpuinfo} MHz ${goto 180}${color lightblue}CPU6: ${color yellow}${cpu cpu6}% $color ${goto 250}${exec awk '/cpu MHz/{i++}i==6{printf "%.f",$4; exit}' /proc/cpuinfo} MHz  
+    ${color lightblue}CPU7: ${color yellow}${cpu cpu7}% $color ${goto 80} ${exec awk '/cpu MHz/{i++}i==7{printf "%.f",$4; exit}' /proc/cpuinfo} MHz ${goto 180}${color lightblue}CPU8: ${color yellow}${cpu cpu8}% $color ${goto 250}${exec awk '/cpu MHz/{i++}i==8{printf "%.f",$4; exit}' /proc/cpuinfo} MHz 
+    ${color yellow}${font sans-serif:bold:size=8}NVidia GeForce 1050i Ti GPU ${hr 2}${font}
+    ${color lightblue}Driver Ver${goto 95}:$color ${execi 60 nvidia-settings -query [gpu]/NvidiaDriverVersion -t} ${goto 165}${color lightblue}GPU Utilization: $color${exec nvidia-settings -tq GPUUtilization | awk -F '[,= ]' '{ print $2 }'}%
+    ${color lightblue}Performance Level: $color${nvidia perflevel} ${goto 165}${color lightblue}Performance Mode: $color${nvidia perfmode}
+    ${color lightblue}Fan level${goto 95}: $color ${nvidia fanlevel}% ${goto 165}${color lightblue}GPU temperature: $color ${nvidia temp}°C 
+    ${color lightblue}Total Memory : $color${nvidia memtotal} MB${goto 165}${color lightblue}Free Memory: $color${nvidia memavail} MB
+    ${color lightblue}GPU Clock${goto 95}: $color${nvidia gpufreqcur} MHz${goto 165}${color lightblue}Max GPU Clock: $color${nvidia gpufreqmax} MHz
+    ${color yellow}${font sans-serif:bold:size=8}MEMORY ${font sans-serif:bold:size=8} ${hr 2} ${font}
+    ${color lightblue}Swap: $color $swapmax ${swapbar 8,50} ${goto 180}${color lightblue}RAM:$color $mem ${membar 8,50 ($mem/$memmax)}
+
+    ${color yellow}${font sans-serif:bold:size=8}HARD DRIVE ${hr 2}${font}
+    ${goto 10}${color lightblue}Downloads ${goto 80} ${color} (sda) ${goto 120} ${color lightblue}Temp :${color}${execi 300 nc localhost 7634 | cut -c 24-25 }C${goto 188} ${color lightblue}${fs_free_perc /home/Downloads}% ${color}${goto 220}Free:$color ${fs_bar_free 8,50 /home/Downloads}
+    ${goto 10}${color lightblue}Boot ${goto 80} $color (sdb) ${goto 120} ${color lightblue}Temp : ${color}${execi 300 nc localhost 7634 | cut -c 24-25 }C${goto 188} ${color lightblue}${fs_free_perc /home/Downloads}% ${color}${goto 220}Free: $color ${fs_bar_free 8,50 /boot/efi}
+    ${goto 10}${color lightblue}Image Storage${goto 80} $color (sdc1)$color  ${goto 120} ${color lightblue}Temp : ${color}${execi 300 nc localhost 7634 | cut -c 98-99 }C${goto 188} ${color lightblue}${fs_free_perc /home/jeff/Slot1}%${goto 220}Free: $color ${fs_bar_free 8,50 /home/jeff/Slot1}
+    ${goto 10}${color lightblue}Audio Dir ${goto 80} $color (sdc2) ${goto 120} ${color lightblue}Temp : ${color}${execi 300 nc localhost 7634 | cut -c 133-134}C${goto 188} ${color lightblue}${fs_free_perc /home/jeff/Slot0}%${goto 220}Free: $color ${fs_bar_free 8,50 /home/jeff/Slot0}
+    ${goto 10}${color lightblue}Home ${goto 80} $color (sde) ${goto 120} ${color lightblue}Temp : ${color}${execi 300 nc localhost 7634 | cut -c 169-170}C ${goto 188}${color lightblue} ${fs_free_perc /home}% ${goto 220}Free: $color ${fs_bar_free 8,50 /home}
+    $stippled_hr
+    ${color lightblue}${font sans-serif:bold:size=8}${goto 80}Used:$color ${fs_used /} ${color lightblue}${goto 200} Total : $color ${fs_size /}${font}
+    ${color yellow}${font sans-serif:bold:size=8}NETWORK ${hr 2} ${font} ${if_existing /proc/net/route enp5s0}     ${alignc}Wired
+    ${color lightblue}Up: ${color yellow}${upspeed enp5s0}kb/s $color${alignr}${upspeedgraph enp5s0 8,60 000000 ffffff}
+    ${color lightblue}Down: ${color yellow}${downspeed enp5s0}kb/s $color${alignr}${downspeedgraph enp5s0 8,60 000000 ffffff}
+    ${color lightblue}Local IP: $color${alignr}${addr enp5s0}
+    ${else} #https://bbs.archlinux.org/viewtopic.php?id=60530
+#   ${execpi 5 touch ~/.conky/Weather/pingfile
+#   ${execpi 5 ping 1.1.1.1 > ~/.conky/Weather/pingfile
+    ${if_running mullvad-vpn}
+    ${color yellow}${font sans-serif:bold:size=8}${goto 30}VPN ${goto 120}${color lightblue}Attached to: ${color yellow}${wireless_essid wlx0013eff4099e} ${font}
+    $stippled_hr
+    ${goto 16}${color lightblue}Link Qual: $color${wireless_link_qual wlx0013eff4099e}/${wireless_link_qual_max wlx0013eff4099e}%${goto 170}${color lightblue}Bit Rate: $color${wireless_bitrate  wlx0013eff4099e}
+    ${color lightblue}Channel  : ${color}${wireless_channel wlx0013eff4099e}  ${goto 170}${color lightblue}Freq${goto 213}: $color${wireless_freq  wlx0013eff4099e}
+    ${goto 170}${color lightblue}Public WiFi:${color yellow}${execi 10800 ~/.conkyIP}
+    ${goto 21}${color lightblue}Tun0 IP: $color${addr tun0}
+    ${goto 48}${color lightblue}Up: $color${upspeed tun0} kb/s $color${goto 170}${upspeedgraph tun0 8,135 000000 ffffff}
+    ${goto 32}${color yellow}Down: $color${downspeed tun0} kb/s $color${goto 170}${downspeedgraph tun0 8,135 000000 ffffff}  
+    ${else}    
+    ${if_existing /proc/net/route wlx0013eff4099e} 
+    ${color yellow}${font sans-serif:bold:size=8}${goto 30}Wireless ${goto 120}${color lightblue}Attached to: ${color yellow}${wireless_essid wlx0013eff4099e} ${font}
+    $stippled_hr
+    ${goto 28}${color lightblue}Link Qual: $color${wireless_link_qual wlx0013eff4099e}/${wireless_link_qual_max wlx0013eff4099e}%${goto 170}${color lightblue}Bit Rate: $color${wireless_bitrate  wlx0013eff4099e}
+    ${color lightblue}Channel: ${color}${wireless_channel wlx0013eff4099e}Hz  ${goto 170}${color lightblue}Freq: $color${wireless_freq  wlx0013eff4099e}
+    ${goto 21}${color lightblue}WiFi IP: $color${addr wlx0013eff4099e}   ${goto 170}${color lightblue}Public WiFi:${color yellow}${execi 10800 ~/.conkyIP}
+    ${goto 45}${color lightblue}Up: $color${upspeed wlx0013eff4099e} kb/s $color${goto 170}${upspeedgraph wlx0013eff4099e 8,135 000000 ffffff}
+    ${color yellow}Down: $color${downspeed wlx0013eff4099e} kb/s $color${goto 170}${downspeedgraph wlx0013eff4099e 8,135 000000 ffffff}  
+    ${endif}${endif}${endif}
+    ${color yellow}${font sans-serif:bold:size=8}PROCESSES ${hr 2} ${font}
+    ${color lightblue}${offset 10}Total:$color $processes  ${color lightblue}${offset 80}Running :$color ${execp cat /proc/stat | grep 'procs_running' | awk '{print $2}';exit}
+    $stippled_hr
+    ${color}${offset 10}Name ${offset 52} PID${offset 45} CPU% ${offset 18}MEM%
+    ${color lightblue}${font sans-serif:bold:size=8} ${hr 2} ${font}
+    ${color lightblue}${goto 20}${top name 1} ${goto 110} $color ${top pid 1} ${goto 170} $color ${top cpu 1} ${goto 225} $color ${top mem 1}
+    ${color lightblue}${goto 20}${top name 2} ${goto 110} $color ${top pid 2} ${goto 170} $color ${top cpu 2} ${goto 225} $color ${top mem 2}
+    ${color lightblue}${goto 20}${top name 3} ${goto 110} $color ${top pid 3} ${goto 170} $color ${top cpu 3} ${goto 225} $color ${top mem 3}
+    ${color lightblue}${goto 20}${top name 4} ${goto 110} $color ${top pid 4} ${goto 170} $color ${top cpu 4} ${goto 225} $color ${top mem 4}
+    ${color lightblue}${goto 20}${top name 2} ${goto 110} $color ${top pid 2} ${goto 170} $color ${top cpu 2} ${goto 225} $color ${top mem 5}
+    ${color lightblue}${goto 20}${top name 3} ${goto 110} $color ${top pid 3} ${goto 170} $color ${top cpu 3} ${goto 225} $color ${top mem 6}
+    ${color lightblue}${goto 20}${top name 4} ${goto 110} $color ${top pid 4} ${goto 170} $color ${top cpu 4} ${goto 225} $color ${top mem 7}
+    ${color yellow}${font sans-serif:bold:size=8} ${hr 2} ${font}
+#    ${color}Inbound Connection ${goto 190} Local Service/Port$color
+    ${color lightblue}Remote Service/Port  ${goto 150}${color lightblue}Outbound Connection: $color${tcp_portmon 32768 61000 count}
+    $stippled_hr
+  #  if emails are displayed show only once.
+    ${color lightblue}${tcp_portmon 32768 61000 rservice 0} $color${goto 56}${tcp_portmon 32768 61000 rhost  0}
+    ${color lightblue}${tcp_portmon 32768 61000 rservice 1} $color${goto 56}${tcp_portmon 32768 61000 rhost  1}
+    ${color lightblue}${tcp_portmon 32768 61000 rservice 2} $color${goto 56}${tcp_portmon 32768 61000 rhost  2}
+    ${color lightblue}${tcp_portmon 32768 61000 rservice 3} $color${goto 56}${tcp_portmon 32768 61000 rhost  3}
+    ${color lightblue}${tcp_portmon 32768 61000 rservice 4} $color${goto 56}${tcp_portmon 32768 61000 rhost  4}
+    ${color lightblue}${tcp_portmon 32768 61000 rservice 5} $color${goto 56}${tcp_portmon 32768 61000 rhost  5}
+    ${color lightblue}${tcp_portmon 32768 61000 rservice 6} $color${goto 56}${tcp_portmon 32768 61000 rhost  6}
+    ${color lightblue}${tcp_portmon 32768 61000 rservice 7} $color${goto 56}${tcp_portmon 32768 61000 rhost  7}
+    ${color lightblue}${tcp_portmon 32768 61000 rservice 8} $color${goto 56}${tcp_portmon 32768 61000 rhost  8}  
+ ]]
+
