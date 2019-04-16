@@ -1,0 +1,6 @@
+#!/bin/sh
+conky -c ~/.conky/Active/.conkyrc1 &
+# conky -c ~/.conky/Active/.conkybasic_c110 & exit
+# conky -c ~/.conky/Active/.conky-music & 
+# conky -c ~/.conky/Display_BBC_Weather &
+conky -c ~/.conky/Active/.conky-process & exit
